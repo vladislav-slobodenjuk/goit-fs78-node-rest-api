@@ -1,9 +1,16 @@
 import express from "express";
 import contactsService from "../../models/contacts-model.js";
+import Joi from "joi";
 
 import HttpError from "../../helpers/HttpError.js";
 
 const router = express.Router();
+
+const ContactSchema = Joi.object({
+  name: Joi.string().required().messages({ "any.required": "name" }),
+  email: Joi.string().required().messages({ "any.required": "email" }),
+  phone: Joi.string().required().messages({ "any.required": "phone" }),
+});
 
 router.get("/", async (req, res, next) => {
   try {
@@ -27,10 +34,16 @@ router.get("/:contactId", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  res.json({
-    message: "post template message",
-    contact: req.body,
-  });
+  try {
+    const { error } = ContactSchema.validate(req.body);
+    if (error)
+      throw HttpError(400, `missing required field '${error.message}'`);
+
+    const result = await contactsService.addContact(req.body);
+    res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.delete("/:contactId", async (req, res, next) => {
