@@ -1,9 +1,15 @@
 import express from "express";
+import contactsService from "../../models/contacts-model.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res, next) => {
-  res.json({ message: "get template message" });
+  try {
+    const result = await contactsService.listContacts();
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/:contactId", async (req, res, next) => {
