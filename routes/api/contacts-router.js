@@ -46,18 +46,26 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.put("/:contactId", async (req, res, next) => {
+  try {
+    const { error } = ContactSchema.validate(req.body);
+    if (error)
+      throw HttpError(400, `missing required field '${error.message}'`);
+
+    const { contactId } = req.params;
+    const result = await contactsService.updateContact(contactId, req.body);
+    if (!result) throw HttpError(404, `id=${contactId} not found`);
+
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.delete("/:contactId", async (req, res, next) => {
   res.json({
     message: "delete template message",
     id: req.params.contactId,
-  });
-});
-
-router.put("/:contactId", async (req, res, next) => {
-  res.json({
-    message: "put template message",
-    id: req.params.contactId,
-    contact: req.body,
   });
 });
 
