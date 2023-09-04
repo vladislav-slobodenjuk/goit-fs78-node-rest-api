@@ -28,7 +28,7 @@ export const addContact = async ({ name, email, phone }) => {
   return newContact;
 };
 
-export const updateContact = async (contacId, body) => {
+export const updateContactById = async (contacId, body) => {
   const contacts = await listContacts();
   const idx = contacts.findIndex((contact) => contact.id === contacId);
   if (idx === -1) return null;
@@ -38,7 +38,7 @@ export const updateContact = async (contacId, body) => {
   return contacts[idx];
 };
 
-export const deleteContact = async (contacId) => {
+export const deleteContactById = async (contacId) => {
   const contacts = await listContacts();
   const idx = contacts.findIndex((contact) => contact.id === contacId);
   if (idx === -1) return null;
@@ -51,7 +51,7 @@ export const deleteContact = async (contacId) => {
 export default {
   listContacts,
   getContactById,
-  deleteContact,
+  deleteContactById,
   addContact,
-  updateContact,
+  updateContactById,
 };
