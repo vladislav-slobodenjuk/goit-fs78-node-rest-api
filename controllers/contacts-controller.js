@@ -1,4 +1,4 @@
-// import HttpError from "../helpers/HttpError.js";
+import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import Contact from "../models/Contact.js";
 
@@ -15,10 +15,10 @@ const getAll = async (req, res) => {
 //   res.json(result);
 // };
 
-// const add = async (req, res) => {
-//   const result = await contactsService.addContact(req.body);
-//   res.status(201).json(result);
-// };
+const add = async (req, res) => {
+  const result = await Contact.create(req.body);
+  res.status(201).json(result);
+};
 
 // const updateById = async (req, res) => {
 //   const { contactId } = req.params;
@@ -36,10 +36,15 @@ const getAll = async (req, res) => {
 //   res.json({ message: `contact id=${contactId} deleted` });
 // };
 
+// const patchById = async (req, res) => {
+
+//   res.json({ message: `contact id=${contactId} deleted` });
+// };
+
 export default {
   getAll: ctrlWrapper(getAll),
   // getById: ctrlWrapper(getById),
-  // add: ctrlWrapper(add),
+  add: ctrlWrapper(add),
   // updateById: ctrlWrapper(updateById),
   // deleteById: ctrlWrapper(deleteById),
 };
