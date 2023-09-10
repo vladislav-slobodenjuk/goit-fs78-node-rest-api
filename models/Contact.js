@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 import Joi from "joi";
 
-import { handleSaveError } from "./hooks.js";
+import { handleSaveError, runUpdateValidation } from "./hooks.js";
 
 const contactSchema = new Schema(
   {
@@ -24,6 +24,9 @@ const contactSchema = new Schema(
 );
 
 contactSchema.post("save", handleSaveError);
+
+contactSchema.pre("findOneAndUpdate", runUpdateValidation);
+contactSchema.post("findOneAndUpdate", handleSaveError);
 
 export const Contact = model("contact", contactSchema);
 

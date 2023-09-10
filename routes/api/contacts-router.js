@@ -12,7 +12,12 @@ router.get("/:contactId", validateContactId, contactsController.getById);
 
 router.post("/", validateContactAdd, contactsController.add);
 
-// router.put("/:contactId", validateContactId, validateContactAdd, contactsController.updateById);
+router.put(
+  "/:contactId",
+  validateContactId,
+  validateContactAdd,
+  contactsController.updateById
+);
 
 // router.delete("/:contactId",validateContactId,  contactsController.deleteById);
 
