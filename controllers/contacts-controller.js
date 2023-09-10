@@ -1,19 +1,19 @@
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
-import Contact from "../models/Contact.js";
+import { Contact } from "../models/Contact.js";
 
 const getAll = async (req, res) => {
   const result = await Contact.find();
   res.json(result);
 };
 
-// const getById = async (req, res) => {
-//   const { contactId } = req.params;
-//   const result = await contactsService.getContactById(contactId);
-//   if (!result) throw HttpError(404, `id=${contactId} not found`);
+const getById = async (req, res) => {
+  const { contactId } = req.params;
+  const result = await Contact.findById(contactId);
+  if (!result) throw HttpError(404, `id ${contactId} not found`);
 
-//   res.json(result);
-// };
+  res.json(result);
+};
 
 const add = async (req, res) => {
   const result = await Contact.create(req.body);
@@ -43,7 +43,7 @@ const add = async (req, res) => {
 
 export default {
   getAll: ctrlWrapper(getAll),
-  // getById: ctrlWrapper(getById),
+  getById: ctrlWrapper(getById),
   add: ctrlWrapper(add),
   // updateById: ctrlWrapper(updateById),
   // deleteById: ctrlWrapper(deleteById),
