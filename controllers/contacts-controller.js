@@ -28,18 +28,18 @@ const updateById = async (req, res) => {
   res.json(r);
 };
 
-// const deleteById = async (req, res) => {
-//   const { contactId } = req.params;
-//   const result = await contactsService.deleteContactById(contactId);
-//   if (!result) throw HttpError(404, `id=${contactId} not found`);
+const deleteById = async (req, res) => {
+  const { contactId } = req.params;
+  const result = await Contact.findByIdAndDelete(contactId);
+  if (!result) throw HttpError(404, `id=${contactId} not found`);
 
-//   res.json({ message: `contact id=${contactId} deleted` });
-// };
+  res.json({ message: `contact id=${contactId} deleted` });
+};
 
 export default {
   getAll: ctrlWrapper(getAll),
   getById: ctrlWrapper(getById),
   add: ctrlWrapper(add),
   updateById: ctrlWrapper(updateById),
-  // deleteById: ctrlWrapper(deleteById),
+  deleteById: ctrlWrapper(deleteById),
 };
