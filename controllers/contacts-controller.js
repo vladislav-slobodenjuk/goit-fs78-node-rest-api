@@ -36,11 +36,6 @@ const updateById = async (req, res) => {
 //   res.json({ message: `contact id=${contactId} deleted` });
 // };
 
-// const patchById = async (req, res) => {
-
-//   res.json({ message: `contact id=${contactId} deleted` });
-// };
-
 export default {
   getAll: ctrlWrapper(getAll),
   getById: ctrlWrapper(getById),

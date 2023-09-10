@@ -3,6 +3,7 @@ import express from "express";
 import contactsController from "../../controllers/contacts-controller.js";
 import validateContactId from "../../middlewares/validateContactId.js";
 import validateContactAdd from "../../middlewares/validateContactAdd.js";
+import validateContactPatch from "../../middlewares/validateContactPatch.js";
 
 const router = express.Router();
 
@@ -19,8 +20,13 @@ router.put(
   contactsController.updateById
 );
 
-// router.delete("/:contactId",validateContactId,  contactsController.deleteById);
+router.patch(
+  "/:contactId/favorite",
+  validateContactId,
+  validateContactPatch,
+  contactsController.updateById
+);
 
-// router.patch("/:contactId/favorite",validateContactId, contactsController.patchById);
+// router.delete("/:contactId",validateContactId,  contactsController.deleteById);
 
 export default router;
