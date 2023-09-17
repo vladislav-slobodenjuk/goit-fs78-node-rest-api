@@ -50,7 +50,7 @@ export const userRegisterSchema = Joi.object({
     .default("starter"),
 });
 
-export const userLogInSchema = Joi.object({
+export const userLoginSchema = Joi.object({
   email: Joi.string()
     .pattern(emailRegexp)
     .required()
