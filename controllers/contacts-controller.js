@@ -3,34 +3,51 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import { Contact } from "../models/Contact.js";
 
 const getAll = async (req, res) => {
-  const result = await Contact.find();
+  const { _id: owner } = req.user;
+  const result = await Contact.find({ owner }).populate(
+    "owner",
+    "email subscription"
+  );
+
   res.json(result);
 };
 
 const getById = async (req, res) => {
+  const { _id: owner } = req.user;
+
   const { contactId } = req.params;
-  const result = await Contact.findById(contactId);
+  const result = await Contact.findOne({ _id: contactId, owner });
   if (!result) throw HttpError(404, `id ${contactId} not found`);
 
   res.json(result);
 };
 
 const add = async (req, res) => {
-  const result = await Contact.create(req.body);
+  const { _id: owner } = req.user;
+
+  const result = await Contact.create({ ...req.body, owner });
   res.status(201).json(result);
 };
 
 const updateById = async (req, res) => {
+  const { _id: owner } = req.user;
+
   const { contactId } = req.params;
-  const r = await Contact.findByIdAndUpdate(contactId, req.body, { new: true });
+  const r = await Contact.findOneAndUpdate(
+    { _id: contactId, owner },
+    req.body,
+    { new: true }
+  );
   if (!r) throw HttpError(404, `id ${contactId} not found`);
 
   res.json(r);
 };
 
 const deleteById = async (req, res) => {
+  const { _id: owner } = req.user;
+
   const { contactId } = req.params;
-  const result = await Contact.findByIdAndDelete(contactId);
+  const result = await Contact.findOneAndDelete({ _id: contactId, owner });
   if (!result) throw HttpError(404, `id=${contactId} not found`);
 
   res.json({ message: `contact id=${contactId} deleted` });
