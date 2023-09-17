@@ -1,15 +1,18 @@
+import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import { User } from "../models/User.js";
 
 const register = async (req, res) => {
-  console.log("register");
+  const { email } = req.body;
+  const user = await User.findOne({ email });
 
-  console.log(req.body);
+  if (user) throw HttpError(409, `email ${email} is in use`);
 
-  // const result = { result: req.body };
-  const result = User.create(req.body);
+  const newUser = await User.create(req.body);
 
-  res.json(result);
+  res.status(201).json({
+    user: { email: newUser.email, subscription: newUser.subscription },
+  });
 };
 
 export default {
