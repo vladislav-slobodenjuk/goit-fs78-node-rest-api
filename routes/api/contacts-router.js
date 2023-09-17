@@ -4,8 +4,11 @@ import contactsController from "../../controllers/contacts-controller.js";
 import validateContactId from "../../middlewares/validateContactId.js";
 import validateContactAdd from "../../middlewares/validateContactAdd.js";
 import validateContactPatch from "../../middlewares/validateContactPatch.js";
+import authentificate from "../../middlewares/authentificate.js";
 
 const router = express.Router();
+
+router.use(authentificate);
 
 router.get("/", contactsController.getAll);
 
