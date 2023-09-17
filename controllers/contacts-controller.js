@@ -4,10 +4,14 @@ import { Contact } from "../models/Contact.js";
 
 const getAll = async (req, res) => {
   const { _id: owner } = req.user;
-  const result = await Contact.find({ owner }).populate(
-    "owner",
-    "email subscription"
-  );
+
+  const { page = 1, limit = 10 } = req.query;
+  const skip = (page - 1) * limit;
+
+  const result = await Contact.find({ owner }, "-updatedAt", {
+    skip,
+    limit,
+  }).populate("owner", "email subscription");
 
   res.json(result);
 };
