@@ -60,3 +60,9 @@ export const userLoginSchema = Joi.object({
     .required()
     .messages({ "any.required": "password" }),
 });
+
+export const userUpdateSchema = Joi.object({
+  subscription: Joi.string()
+    .valid(...roleList)
+    .required(),
+});
