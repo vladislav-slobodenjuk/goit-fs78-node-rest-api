@@ -1,23 +1,29 @@
 import express from "express";
 
-import contactsController from "../../controllers/contacts-controller.js";
+import authentificate from "../../middlewares/authentificate.js";
+
 import validateContactId from "../../middlewares/validateContactId.js";
 import validateContactAdd from "../../middlewares/validateContactAdd.js";
 import validateContactPatch from "../../middlewares/validateContactPatch.js";
-import authentificate from "../../middlewares/authentificate.js";
+
+import contactsController from "../../controllers/contacts-controller.js";
 
 const router = express.Router();
 
-router.use(authentificate);
+router.get("/", authentificate, contactsController.getAll);
 
-router.get("/", contactsController.getAll);
+router.get(
+  "/:contactId",
+  authentificate,
+  validateContactId,
+  contactsController.getById
+);
 
-router.get("/:contactId", validateContactId, contactsController.getById);
-
-router.post("/", validateContactAdd, contactsController.add);
+router.post("/", authentificate, validateContactAdd, contactsController.add);
 
 router.put(
   "/:contactId",
+  authentificate,
   validateContactId,
   validateContactAdd,
   contactsController.updateById
@@ -25,11 +31,17 @@ router.put(
 
 router.patch(
   "/:contactId/favorite",
+  authentificate,
   validateContactId,
   validateContactPatch,
   contactsController.updateById
 );
 
-router.delete("/:contactId", validateContactId, contactsController.deleteById);
+router.delete(
+  "/:contactId",
+  authentificate,
+  validateContactId,
+  contactsController.deleteById
+);
 
 export default router;
