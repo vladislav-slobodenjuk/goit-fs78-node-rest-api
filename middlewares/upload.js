@@ -2,7 +2,6 @@ import multer from "multer";
 import path from "path";
 
 const destination = path.resolve("temp");
-console.log(destination);
 
 const storage = multer.diskStorage({
   destination,

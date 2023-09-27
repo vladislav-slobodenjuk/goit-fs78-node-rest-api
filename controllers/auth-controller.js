@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import path from "path";
+import fs from "fs/promises";
 
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
@@ -11,10 +13,25 @@ const register = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
-  if (user) throw HttpError(409, `email ${email} is in use`);
+  const { path: oldPath, filename } = req.file;
+
+  if (user) {
+    await fs.unlink(oldPath);
+    throw HttpError(409, `email ${email} is in use`);
+  }
+
+  const avatarPath = path.resolve("public", "avatars");
+  const newPath = path.join(avatarPath, filename);
+  await fs.rename(oldPath, newPath);
+
+  const avatarURL = path.join("avatars", filename);
 
   const hashedPass = await bcrypt.hash(password, 10);
-  const newUser = await User.create({ ...req.body, password: hashedPass });
+  const newUser = await User.create({
+    ...req.body,
+    avatarURL,
+    password: hashedPass,
+  });
 
   res.status(201).json({
     user: { email: newUser.email, subscription: newUser.subscription },

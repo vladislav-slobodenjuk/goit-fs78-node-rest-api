@@ -13,8 +13,8 @@ const authRouter = express.Router();
 
 authRouter.post(
   "/register",
-  validateUserRegister,
   upload.single("avatar"),
+  validateUserRegister,
   authController.register
 );
 
