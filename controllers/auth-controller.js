@@ -6,7 +6,9 @@ import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
 
 import HttpError from "../helpers/HttpError.js";
+import trimAvatar from "../helpers/trimAvatar.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
+
 import { User } from "../models/User.js";
 
 const { JWT_SECRET } = process.env;
@@ -34,6 +36,7 @@ const register = async (req, res) => {
     const newPath = path.join(avatarPath, filename);
     await fs.rename(tempPath, newPath);
     avatarURL = path.join("avatars", filename);
+    trimAvatar(newPath);
   }
 
   const hashedPass = await bcrypt.hash(password, 10);
@@ -95,14 +98,15 @@ const updateCurrent = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   const { email } = req.user;
-  //
-  if (!req.file) throw HttpError(400, `image file is required`);
+
+  if (!req.file) throw HttpError(400, `image file required`);
 
   const { path: tempPath, filename } = req.file;
 
   const newPath = path.join(avatarPath, filename);
   await fs.rename(tempPath, newPath);
   const avatarURL = path.join("avatars", filename);
+  trimAvatar(newPath);
 
   await User.findOneAndUpdate({ email }, { avatarURL });
 
