@@ -7,10 +7,16 @@ import validateUserLogin from "../../middlewares/validateUserLogin.js";
 import validateUserUpdate from "../../middlewares/validateUserUpdate.js";
 
 import authentificate from "../../middlewares/authentificate.js";
+import upload from "../../middlewares/upload.js";
 
 const authRouter = express.Router();
 
-authRouter.post("/register", validateUserRegister, authController.register);
+authRouter.post(
+  "/register",
+  upload.single("avatar"),
+  validateUserRegister,
+  authController.register
+);
 
 authRouter.post("/login", validateUserLogin, authController.login);
 
@@ -23,6 +29,13 @@ authRouter.patch(
   authentificate,
   validateUserUpdate,
   authController.updateCurrent
+);
+
+authRouter.patch(
+  "/avatars",
+  authentificate,
+  upload.single("avatar"),
+  authController.updateAvatar
 );
 
 export default authRouter;
