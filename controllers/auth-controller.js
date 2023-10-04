@@ -4,14 +4,14 @@ import fs from "fs/promises";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
+import { nanoid } from "nanoid";
 
-import HttpError from "../helpers/HttpError.js";
-import trimAvatar from "../helpers/trimAvatar.js";
+import { HttpError, trimAvatar, sendEmail } from "../helpers/index.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 import { User } from "../models/User.js";
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET, BASE_URL } = process.env;
 
 const avatarPath = path.resolve("public", "avatars");
 
@@ -40,11 +40,22 @@ const register = async (req, res) => {
   }
 
   const hashedPass = await bcrypt.hash(password, 10);
+  const verificationToken = nanoid();
+
   const newUser = await User.create({
     ...req.body,
-    avatarURL,
     password: hashedPass,
+    avatarURL,
+    verificationToken,
   });
+
+  const verifyEmail = {
+    to: email,
+    subject: `Test email verification for ${email}`,
+    html: `<strong>Click <a target='_blank' href='${BASE_URL}/api/auth/verify/${verificationToken}'>link</a> to verify email</strong>`,
+  };
+
+  await sendEmail(verifyEmail);
 
   res.status(201).json({
     user: {
