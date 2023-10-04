@@ -24,7 +24,10 @@ const userSchema = new Schema(
       enum: roleList,
       default: "starter",
     },
-    token: String,
+    token: {
+      type: String,
+      default: "",
+    },
     avatarURL: String,
     verify: {
       type: Boolean,

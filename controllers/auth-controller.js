@@ -126,6 +126,22 @@ const updateAvatar = async (req, res) => {
   res.json({ user: { email, avatarURL } });
 };
 
+const verify = async (req, res) => {
+  const { verificationToken } = req.params;
+  const user = await User.findOne({ verificationToken });
+
+  if (!user) throw HttpError(404, `User not found`);
+
+  await User.findByIdAndUpdate(user._id, {
+    verify: true,
+    verificationToken: "",
+  });
+
+  res.json({
+    message: "Email is seccessully verified",
+  });
+};
+
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
@@ -133,4 +149,5 @@ export default {
   getCurrent: ctrlWrapper(getCurrent),
   updateCurrent: ctrlWrapper(updateCurrent),
   updateAvatar: ctrlWrapper(updateAvatar),
+  verify: ctrlWrapper(verify),
 };

@@ -24,6 +24,8 @@ authRouter.post("/logout", authentificate, authController.logout);
 
 authRouter.get("/current", authentificate, authController.getCurrent);
 
+authRouter.get("/verify/:verificationToken", authController.verify);
+
 authRouter.patch(
   "/current",
   authentificate,
