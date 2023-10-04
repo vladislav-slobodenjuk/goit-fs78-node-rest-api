@@ -5,6 +5,7 @@ import authController from "../../controllers/auth-controller.js";
 import validateUserRegister from "../../middlewares/validateUserRegister.js";
 import validateUserLogin from "../../middlewares/validateUserLogin.js";
 import validateUserUpdate from "../../middlewares/validateUserUpdate.js";
+import validateUserEmail from "../../middlewares/validateUserEmail.js";
 
 import authentificate from "../../middlewares/authentificate.js";
 import upload from "../../middlewares/upload.js";
@@ -24,8 +25,6 @@ authRouter.post("/logout", authentificate, authController.logout);
 
 authRouter.get("/current", authentificate, authController.getCurrent);
 
-authRouter.get("/verify/:verificationToken", authController.verify);
-
 authRouter.patch(
   "/current",
   authentificate,
@@ -39,5 +38,9 @@ authRouter.patch(
   upload.single("avatar"),
   authController.updateAvatar
 );
+
+authRouter.get("/verify/:verificationToken", authController.verify);
+
+authRouter.post("/verify", validateUserEmail, authController.resendEmail);
 
 export default authRouter;

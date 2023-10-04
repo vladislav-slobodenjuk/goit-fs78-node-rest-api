@@ -40,6 +40,7 @@ const register = async (req, res) => {
   }
 
   const hashedPass = await bcrypt.hash(password, 10);
+
   const verificationToken = nanoid();
 
   const newUser = await User.create({
@@ -52,7 +53,7 @@ const register = async (req, res) => {
   const verifyEmail = {
     to: email,
     subject: `Test email verification for ${email}`,
-    html: `<strong>Click <a target='_blank' href='${BASE_URL}/api/auth/verify/${verificationToken}'>link</a> to verify email</strong>`,
+    html: `<strong>Click <a target='_blank' href='${BASE_URL}/api/users/verify/${newUser.verificationToken}'>link</a> to verify email</strong>`,
   };
 
   await sendEmail(verifyEmail);
@@ -138,7 +139,28 @@ const verify = async (req, res) => {
   });
 
   res.json({
-    message: "Email is seccessully verified",
+    message: "Verification successful",
+  });
+};
+
+const resendEmail = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) throw HttpError(404, `Email not found`);
+
+  if (user.verify) throw HttpError(400, "Verification has already been passed");
+
+  const verifyEmail = {
+    to: email,
+    subject: `Test email verification for ${email}`,
+    html: `<strong>Click <a target='_blank' href='${BASE_URL}/api/users/verify/${user.verificationToken}'>link</a> to verify email</strong>`,
+  };
+
+  await sendEmail(verifyEmail);
+
+  res.json({
+    message: "Verification email sent",
   });
 };
 
@@ -150,4 +172,5 @@ export default {
   updateCurrent: ctrlWrapper(updateCurrent),
   updateAvatar: ctrlWrapper(updateAvatar),
   verify: ctrlWrapper(verify),
+  resendEmail: ctrlWrapper(resendEmail),
 };

@@ -78,3 +78,10 @@ export const userUpdateSchema = Joi.object({
     .valid(...roleList)
     .required(),
 });
+
+export const userEmailSchema = Joi.object({
+  email: Joi.string()
+    .pattern(emailRegexp)
+    .required()
+    .messages({ "any.required": "email" }),
+});
