@@ -24,8 +24,19 @@ const userSchema = new Schema(
       enum: roleList,
       default: "starter",
     },
-    token: String,
+    token: {
+      type: String,
+      default: "",
+    },
     avatarURL: String,
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      required: [true, "Verify token is required"],
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -66,4 +77,11 @@ export const userUpdateSchema = Joi.object({
   subscription: Joi.string()
     .valid(...roleList)
     .required(),
+});
+
+export const userEmailSchema = Joi.object({
+  email: Joi.string()
+    .pattern(emailRegexp)
+    .required()
+    .messages({ "any.required": "email" }),
 });
